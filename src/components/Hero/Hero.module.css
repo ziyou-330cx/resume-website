@@ -1,0 +1,266 @@
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: stretch;
+  background: linear-gradient(160deg, #ede7dd 0%, #f5f0e8 30%, #faf7f3 100%);
+  color: var(--color-text);
+  overflow: hidden;
+}
+
+/* Full-screen curtain — animated out by GSAP */
+.curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  background: #ede7dd;
+  transform-origin: top center;
+  pointer-events: none;
+}
+
+/* ===== Left Column ===== */
+.left {
+  flex: 0 0 58%;
+  display: flex;
+  align-items: center;
+  padding: 0 80px 0 120px;
+  position: relative;
+  z-index: 3;
+}
+
+.accentLine {
+  position: absolute;
+  left: 80px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1px;
+  height: 280px;
+  background: linear-gradient(
+    180deg,
+    transparent,
+    var(--color-accent-light) 20%,
+    var(--color-accent-light) 80%,
+    transparent
+  );
+}
+
+.textBlock {
+  padding-left: 60px;
+  max-width: 640px;
+}
+
+/* Greeting: subtle text-shadow adds depth; tight kerning maintained */
+.greeting {
+  font-family: var(--font-en);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+  margin-bottom: 32px;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
+}
+
+/* Name: max weight + tighter letter-spacing for impact; text-shadow adds premium depth */
+.name {
+  font-size: clamp(4.5rem, 7vw, 7rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0.02em;
+  margin-bottom: 28px;
+  color: var(--color-text);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 36px;
+}
+
+/* Meta row: medium weight (was 300) for legibility against gradient bg */
+.metaItem {
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  color: var(--color-text-secondary);
+}
+
+.metaDivider {
+  font-family: var(--font-en);
+  font-size: 0.95rem;
+  color: var(--color-border);
+}
+
+/* Tagline: medium weight + tighter line-height for cleaner text block */
+.tagline {
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.7;
+  color: var(--color-text-secondary);
+  margin-bottom: 56px;
+  letter-spacing: 0.03em;
+}
+
+/* ===== Actions ===== */
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+}
+
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 32px;
+  border: 1px solid var(--color-text-tertiary);
+  border-radius: 50px;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--color-text);
+  transition: all var(--transition-base);
+}
+
+.btnPrimary:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  gap: 20px;
+}
+
+.btnArrow {
+  transition: transform var(--transition-base);
+}
+
+.btnPrimary:hover .btnArrow {
+  transform: translateX(4px);
+}
+
+/* Secondary CTA: medium weight (was 400) for better legibility */
+.btnSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 32px;
+  border: 1px solid var(--color-text-tertiary);
+  border-radius: 50px;
+  background: transparent;
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.btnSecondary:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* ===== Right Column ===== */
+.right {
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.01) 0%,
+    rgba(0, 0, 0, 0.005) 100%
+  );
+}
+
+.photoArea {
+  position: relative;
+  width: 380px;
+  height: 520px;
+  z-index: 2;
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Corner accents */
+.corner {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+}
+
+.cornerTL {
+  top: 40px;
+  left: 40px;
+  border-top: 1px solid var(--color-border);
+  border-left: 1px solid var(--color-border);
+}
+
+.cornerBR {
+  bottom: 40px;
+  right: 40px;
+  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid var(--color-border);
+}
+
+/* Background number */
+.bgNumber {
+  position: absolute;
+  bottom: 20px;
+  right: 60px;
+  font-family: var(--font-en);
+  font-size: 10rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  opacity: 0.025;
+  z-index: 1;
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ===== Scroll Hint ===== */
+.scrollHint {
+  position: absolute;
+  bottom: 48px;
+  left: 120px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 3;
+}
+
+.scrollText {
+  font-family: var(--font-en);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  color: var(--color-text-tertiary);
+}
+
+.scrollLine {
+  width: 60px;
+  height: 1px;
+  background: var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.scrollProgress {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 30%;
+  background: var(--color-accent);
+  animation: scrollPulse 2.5s ease infinite;
+}
+
+@keyframes scrollPulse {
+  0% { left: -30%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}

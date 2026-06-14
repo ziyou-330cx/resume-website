@@ -1,0 +1,162 @@
+.projects {
+  background: var(--color-surface);
+}
+
+.header {
+  margin-bottom: 64px;
+}
+
+/* ===== Grid ===== */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
+}
+
+/* ===== Card ===== */
+.card {
+  background: var(--color-bg);
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
+  border-color: var(--color-border);
+}
+
+/* ===== Images Area ===== */
+.imagesArea {
+  position: relative;
+  height: 420px;
+  overflow: hidden;
+}
+
+.imagesScroll {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  height: 100%;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.imagesScroll::-webkit-scrollbar {
+  display: none;
+}
+
+.imgWrapper {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  height: 100%;
+  cursor: pointer;
+}
+
+.img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ===== Card Arrows ===== */
+.cardArrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  opacity: 0;
+  transition: opacity var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+}
+
+.card:hover .cardArrow,
+.imagesArea:hover .cardArrow {
+  opacity: 1;
+}
+
+.cardArrow:hover {
+  background: rgba(196, 154, 108, 0.2);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+.cardArrowLeft {
+  left: 12px;
+}
+
+.cardArrowRight {
+  right: 12px;
+}
+
+/* ===== Placeholder ===== */
+.placeholderBg {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.placeholderLabel {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+  letter-spacing: 0.04em;
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* ===== Scroll Dots ===== */
+.scrollDots {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== Card Body ===== */
+.cardBody {
+  padding: 32px;
+}
+
+/* Card title: bold weight for strong visual anchor on image-heavy cards */
+.cardTitle {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 12px;
+  letter-spacing: 0.02em;
+}
+
+/* Card desc: medium weight + tighter line-height for clean reading */
+.cardDesc {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
