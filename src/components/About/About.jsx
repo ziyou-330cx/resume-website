@@ -21,7 +21,7 @@ export default function About() {
         <div className={styles.top}>
           <div className={styles.avatarWrap}>
             <div className={styles.avatar}>
-              <img src="/photo.jpg" alt="王国光" className={styles.avatarImg} />
+              <img src={`${import.meta.env.BASE_URL}photo.jpg`} alt="王国光" className={styles.avatarImg} />
             </div>
           </div>
           <div className={styles.info}>

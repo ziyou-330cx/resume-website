@@ -63,7 +63,7 @@ export default function Hero() {
       {/* Right: Photo */}
       <div className={styles.right}>
         <div className={`${styles.photoArea} js-hero-photo`}>
-          <img src="/photo.jpg" alt="王国光" className={styles.photo} />
+          <img src={`${import.meta.env.BASE_URL}photo.jpg`} alt="王国光" className={styles.photo} />
         </div>
         {/* Decorative elements */}
         <div className={`${styles.cornerTL} ${styles.corner} js-hero-corner`} />

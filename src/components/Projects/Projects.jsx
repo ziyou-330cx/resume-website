@@ -7,7 +7,7 @@ import styles from './Projects.module.css';
 function ProjectCard({ project, onOpen }) {
   const scrollRef = useRef(null);
   const images = (project.images || []).map(
-    (name) => `/works/${project.folder}/${name}`
+    (name) => `${import.meta.env.BASE_URL}works/${project.folder}/${name}`
   );
 
   const scroll = (direction) => {
@@ -139,7 +139,7 @@ export default function Projects() {
   };
 
   const lightboxImages = lightbox
-    ? lightbox.project.images.map((name) => `/works/${lightbox.project.folder}/${name}`)
+    ? lightbox.project.images.map((name) => `${import.meta.env.BASE_URL}works/${lightbox.project.folder}/${name}`)
     : [];
 
   return (
