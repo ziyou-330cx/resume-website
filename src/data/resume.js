@@ -73,7 +73,6 @@ const resume = {
       folder: 'festival',
       images: [
         '社团文化节.jpg',
-        '社团文化节节目单.jpg',
       ],
     },
   ],
