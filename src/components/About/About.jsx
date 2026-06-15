@@ -1,7 +1,11 @@
 import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import resume from '../../data/resume';
 import { revealSectionHeader, staggerCards, cleanupScrollTriggers } from '../../animations/scrollReveal';
 import styles from './About.module.css';
+
+gsap.registerPlugin(ScrollTrigger);
 
 export default function About() {
   const sectionRef = useRef(null);
@@ -11,6 +15,32 @@ export default function About() {
     if (!el) return;
     revealSectionHeader(el);
     staggerCards(el, `.${styles.statCard}`, { y: 50, stagger: 0.1 });
+
+    // Animate bioSecondary + contact items
+    const bio2 = el.querySelector('.js-bio-secondary');
+    const contacts = el.querySelectorAll('.js-contact-item');
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: el,
+        start: 'top 65%',
+        toggleActions: 'restart none restart reset',
+      },
+      defaults: { ease: 'power3.out' },
+    });
+
+    if (bio2) {
+      tl.fromTo(bio2, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.55 }, '-=0.2');
+    }
+    if (contacts.length) {
+      tl.fromTo(
+        contacts,
+        { y: 24, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5, stagger: 0.1 },
+        '-=0.3',
+      );
+    }
+
     return () => cleanupScrollTriggers(el);
   }, []);
 
@@ -31,19 +61,19 @@ export default function About() {
               {resume.education.school} · {resume.education.major}（{resume.education.degree}）<br />
               {resume.education.period}
             </p>
-            <p className={styles.bioSecondary}>
+            <p className={`${styles.bioSecondary} js-bio-secondary`}>
               在校期间长期深耕学生工作，历任辅导员助理、羽毛球社部长、社团管理中心主席助理，全程主导多场大型校园活动的策划、统筹与视觉设计。
             </p>
             <div className={styles.contactRow}>
-              <a href={`tel:${resume.phone}`} className={styles.contactItem}>
+              <a href={`tel:${resume.phone}`} className={`${styles.contactItem} js-contact-item`}>
                 <span className={styles.contactIcon}>📞</span>
                 {resume.phone}
               </a>
-              <a href={`mailto:${resume.email}`} className={styles.contactItem}>
+              <a href={`mailto:${resume.email}`} className={`${styles.contactItem} js-contact-item`}>
                 <span className={styles.contactIcon}>📧</span>
                 {resume.email}
               </a>
-              <span className={styles.contactItem}>
+              <span className={`${styles.contactItem} js-contact-item`}>
                 <span className={styles.contactIcon}>📍</span>
                 {resume.location}
               </span>
@@ -57,6 +87,7 @@ export default function About() {
             <div key={stat.label} className={styles.statCard}>
               <span className={styles.statValue}>{stat.value}</span>
               <span className={styles.statLabel}>{stat.label}</span>
+              {stat.sub && <span className={styles.statSub}>{stat.sub}</span>}
             </div>
           ))}
         </div>

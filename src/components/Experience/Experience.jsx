@@ -18,6 +18,43 @@ const SPECIAL_PHRASES = [
 const NUM_WARM_RE = /\d+[\+场]?|两场/;        /* event / people counts → warm red  */
 const NUM_COOL_RE = /\d+\s*个/;               /* structural counts       → cool blue */
 
+/** Simple number tokenizer for internship highlights (标题：内容 format). */
+function tokenizeInternHighlight(text) {
+  const tokens = [];
+  let i = 0;
+
+  while (i < text.length) {
+    const warmMatch = text.slice(i).match(NUM_WARM_RE);
+    if (warmMatch && warmMatch.index === 0) {
+      tokens.push({ type: 'num', value: warmMatch[0] });
+      i += warmMatch[0].length;
+      continue;
+    }
+
+    const coolMatch = text.slice(i).match(NUM_COOL_RE);
+    if (coolMatch && coolMatch.index === 0) {
+      tokens.push({ type: 'numCool', value: coolMatch[0] });
+      i += coolMatch[0].length;
+      continue;
+    }
+
+    tokens.push({ type: 'text', value: text[i] });
+    i++;
+  }
+
+  /* merge consecutive plain‑text tokens */
+  const merged = [];
+  for (const t of tokens) {
+    const last = merged[merged.length - 1];
+    if (t.type === 'text' && last && last.type === 'text') {
+      last.value += t.value;
+    } else {
+      merged.push({ ...t });
+    }
+  }
+  return merged;
+}
+
 function tokenizeHighlight(text) {
   const tokens = [];
   let i = 0;
@@ -177,12 +214,15 @@ export default function Experience({ id, label, title, items, variant }) {
                   </ul>
                 ) : (
                   <ul className={styles.highlights}>
-                    {item.highlights.map((h, i) => (
-                      <li key={i}>
-                        {isCampus ? null : '— '}
-                        {h}
-                      </li>
-                    ))}
+                    {item.highlights.map((h, i) => {
+                      const tokens = tokenizeInternHighlight(h);
+                      return (
+                        <li key={i}>
+                          {'— '}
+                          {tokensToJsx(tokens, styles)}
+                        </li>
+                      );
+                    })}
                   </ul>
                 )}
               </div>

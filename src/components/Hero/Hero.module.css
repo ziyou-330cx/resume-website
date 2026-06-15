@@ -1,250 +1,205 @@
+/* ===== Hero — Bouncing Ball Intro ===== */
+
 .hero {
   position: relative;
   height: 100vh;
-  display: flex;
-  align-items: stretch;
-  background: linear-gradient(160deg, #ede7dd 0%, #f5f0e8 30%, #faf7f3 100%);
-  color: var(--color-text);
+  min-height: 700px;
+  background: #f5f0e8;
   overflow: hidden;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+  background-image:
+    radial-gradient(ellipse at 30% 20%, rgba(210, 190, 160, 0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 70% 70%, rgba(200, 175, 145, 0.12) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% 50%, rgba(220, 200, 170, 0.08) 0%, transparent 70%);
 }
 
-/* Full-screen curtain — animated out by GSAP */
-.curtain {
+/* ── Background decorations (for frosted glass to blur) ── */
+.bgDeco1,
+.bgDeco2,
+.bgDeco3 {
   position: absolute;
-  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.bgDeco1 {
+  width: 35vw; height: 35vw; max-width: 500px; max-height: 500px;
+  top: -8%; left: -6%;
+  border: 1px solid rgba(180, 150, 120, 0.12);
+}
+
+.bgDeco2 {
+  width: 28vw; height: 28vw; max-width: 400px; max-height: 400px;
+  bottom: 10%; right: -5%;
+  border: 1px solid rgba(180, 150, 120, 0.1);
+}
+
+.bgDeco3 {
+  width: 200px; height: 200px;
+  top: 45%; left: 58%;
+  background: rgba(200, 175, 145, 0.06);
+}
+
+/* ── Lines row — centered vertically ── */
+.linesRow {
+  position: absolute;
+  top: 50vh;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: flex-end;
+  gap: clamp(100px, 14vw, 200px);
+  z-index: 1;
+}
+
+.lineGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Each horizontal line — thicker & longer to match large type */
+.line {
+  width: 140px;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.22);
+  border-radius: 1px;
+  flex-shrink: 0;
+}
+
+/* Characters — large serif matching the name scale */
+.char {
+  margin-top: 16px;
+  font-family: 'Playfair Display', 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #1a1a1a;
+  line-height: 1.1;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  user-select: none;
+}
+
+/* ── Black frosted glass ball with 3D highlight ── */
+.ball {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  /* Radial gradient for 3D sphere look + frosted glass transparency */
+  background:
+    radial-gradient(circle at 35% 28%, rgba(255,255,255,0.28) 0%, rgba(255,255,255,0.06) 25%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(35,35,35,0.78) 0%, rgba(12,12,12,0.85) 100%);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow:
+    0 3px 16px rgba(0, 0, 0, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset,
+    0 1px 4px rgba(0, 0, 0, 0.15);
   z-index: 10;
-  background: #ede7dd;
-  transform-origin: top center;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ── Contact shadow ── */
+.ballShadow {
+  position: absolute;
+  width: 20px;
+  height: 5px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  filter: blur(3px);
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+/* ===============================================
+   Identity — fades in after animation
+   =============================================== */
+.identity {
+  position: absolute;
+  top: 7vh;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  z-index: 2;
+  opacity: 0;
+  transform: translateX(-50%) translateY(20px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
   pointer-events: none;
 }
 
-/* ===== Left Column ===== */
-.left {
-  flex: 0 0 58%;
-  display: flex;
-  align-items: center;
-  padding: 0 80px 0 120px;
-  position: relative;
-  z-index: 3;
+.identityVisible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
-.accentLine {
-  position: absolute;
-  left: 80px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 1px;
-  height: 280px;
+.name {
+  font-family: 'Playfair Display', 'Noto Serif SC', 'STSong', 'SimSun', serif;
+  font-size: clamp(3rem, 7vw, 5.5rem);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.04em;
+  color: #1a1a1a;
+  margin-bottom: 14px;
+}
+
+.subtitle {
+  font-size: 1.05rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  color: #7a7268;
+  margin-bottom: 36px;
+}
+
+.rule {
+  width: 200px;
+  height: 1px;
+  margin: 0 auto;
   background: linear-gradient(
-    180deg,
+    90deg,
     transparent,
-    var(--color-accent-light) 20%,
-    var(--color-accent-light) 80%,
+    rgba(0, 0, 0, 0.1) 30%,
+    rgba(0, 0, 0, 0.1) 70%,
     transparent
   );
 }
 
-.textBlock {
-  padding-left: 60px;
-  max-width: 640px;
-}
-
-/* Greeting: subtle text-shadow adds depth; tight kerning maintained */
-.greeting {
-  font-family: var(--font-en);
-  font-size: 0.85rem;
-  font-weight: 600;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--color-accent);
-  margin-bottom: 32px;
-  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.03);
-}
-
-/* Name: max weight + tighter letter-spacing for impact; text-shadow adds premium depth */
-.name {
-  font-size: clamp(4.5rem, 7vw, 7rem);
-  font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: 0.02em;
-  margin-bottom: 28px;
-  color: var(--color-text);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 36px;
-}
-
-/* Meta row: medium weight (was 300) for legibility against gradient bg */
-.metaItem {
-  font-size: 1.05rem;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-  color: var(--color-text-secondary);
-}
-
-.metaDivider {
-  font-family: var(--font-en);
-  font-size: 0.95rem;
-  color: var(--color-border);
-}
-
-/* Tagline: medium weight + tighter line-height for cleaner text block */
-.tagline {
-  font-size: 1rem;
-  font-weight: 500;
-  line-height: 1.7;
-  color: var(--color-text-secondary);
-  margin-bottom: 56px;
-  letter-spacing: 0.03em;
-}
-
-/* ===== Actions ===== */
-.actions {
-  display: flex;
-  align-items: center;
-  gap: 36px;
-}
-
-.btnPrimary {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 32px;
-  border: 1px solid var(--color-text-tertiary);
-  border-radius: 50px;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  color: var(--color-text);
-  transition: all var(--transition-base);
-}
-
-.btnPrimary:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-  gap: 20px;
-}
-
-.btnArrow {
-  transition: transform var(--transition-base);
-}
-
-.btnPrimary:hover .btnArrow {
-  transform: translateX(4px);
-}
-
-/* Secondary CTA: medium weight (was 400) for better legibility */
-.btnSecondary {
-  display: inline-flex;
-  align-items: center;
-  padding: 12px 32px;
-  border: 1px solid var(--color-text-tertiary);
-  border-radius: 50px;
-  background: transparent;
-  font-size: 0.95rem;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  color: var(--color-text-secondary);
-  transition: all var(--transition-fast);
-}
-
-.btnSecondary:hover {
-  color: var(--color-accent);
-  border-color: var(--color-accent);
-}
-
-/* ===== Right Column ===== */
-.right {
-  flex: 1;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(
-    180deg,
-    rgba(0, 0, 0, 0.01) 0%,
-    rgba(0, 0, 0, 0.005) 100%
-  );
-}
-
-.photoArea {
-  position: relative;
-  width: 380px;
-  height: 520px;
-  z-index: 2;
-}
-
-.photo {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Corner accents */
-.corner {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-}
-
-.cornerTL {
-  top: 40px;
-  left: 40px;
-  border-top: 1px solid var(--color-border);
-  border-left: 1px solid var(--color-border);
-}
-
-.cornerBR {
-  bottom: 40px;
-  right: 40px;
-  border-bottom: 1px solid var(--color-border);
-  border-right: 1px solid var(--color-border);
-}
-
-/* Background number */
-.bgNumber {
-  position: absolute;
-  bottom: 20px;
-  right: 60px;
-  font-family: var(--font-en);
-  font-size: 10rem;
-  font-weight: 700;
-  color: var(--color-accent);
-  opacity: 0.025;
-  z-index: 1;
-  pointer-events: none;
-  line-height: 1;
-}
-
-/* ===== Scroll Hint ===== */
+/* ===============================================
+   Scroll Hint
+   =============================================== */
 .scrollHint {
   position: absolute;
   bottom: 48px;
-  left: 120px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   align-items: center;
   gap: 16px;
   z-index: 3;
+  animation: fadeInUp 0.7s ease both;
 }
 
 .scrollText {
-  font-family: var(--font-en);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.3em;
-  color: var(--color-text-tertiary);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.35em;
+  color: #b0a99f;
 }
 
 .scrollLine {
   width: 60px;
   height: 1px;
-  background: var(--color-border);
+  background: rgba(0, 0, 0, 0.08);
   position: relative;
   overflow: hidden;
 }
@@ -255,7 +210,7 @@
   left: 0;
   height: 100%;
   width: 30%;
-  background: var(--color-accent);
+  background: #b8864e;
   animation: scrollPulse 2.5s ease infinite;
 }
 
@@ -263,4 +218,84 @@
   0% { left: -30%; }
   50% { left: 100%; }
   100% { left: 100%; }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(12px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+/* ===============================================
+   Responsive
+   =============================================== */
+@media (max-width: 768px) {
+  .hero {
+    min-height: 100vh;
+  }
+
+  .linesRow {
+    top: 50vh;
+    gap: 8vw;
+  }
+
+  .line {
+    width: 80px;
+    height: 1.5px;
+  }
+
+  .char {
+    font-size: clamp(2rem, 8vw, 3.2rem);
+    margin-top: 12px;
+  }
+
+  .ball {
+    width: 24px;
+    height: 24px;
+  }
+
+  .ballShadow {
+    width: 14px;
+    height: 4px;
+  }
+
+  .identity {
+    top: 5vh;
+  }
+
+  .name {
+    font-size: clamp(2.4rem, 10vw, 3.5rem);
+  }
+
+  .subtitle {
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .linesRow {
+    gap: 5vw;
+    top: 50vh;
+  }
+
+  .line {
+    width: 56px;
+  }
+
+  .char {
+    font-size: clamp(1.5rem, 7vw, 2.4rem);
+  }
+
+  .ball {
+    width: 20px;
+    height: 20px;
+  }
+
+  .ballShadow {
+    width: 10px;
+    height: 3px;
+  }
+
+  .identity {
+    top: 4vh;
+  }
 }

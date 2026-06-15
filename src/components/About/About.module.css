@@ -81,7 +81,7 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: var(--color-text-secondary);
   transition: color var(--transition-fast);
 }
@@ -91,7 +91,7 @@ a.contactItem:hover {
 }
 
 .contactIcon {
-  font-size: 1rem;
+  font-size: 1.5rem;
 }
 
 /* ===== Stats ===== */
@@ -116,11 +116,11 @@ a.contactItem:hover {
   transform: translateY(-2px);
 }
 
-/* Stat value: shadow adds premium lift to key numbers */
+/* Stat value: prominent number */
 .statValue {
   display: block;
   font-family: var(--font-en);
-  font-size: 3rem;
+  font-size: 4.2rem;
   font-weight: 700;
   color: var(--color-accent);
   line-height: 1.2;
@@ -129,9 +129,20 @@ a.contactItem:hover {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
 }
 
+/* Stat label: 二号 (~22pt) */
 .statLabel {
   display: block;
-  font-size: 0.95rem;
-  color: var(--color-text-secondary);
+  font-size: 1.8rem;
+  color: var(--color-text);
   font-weight: 500;
+  margin-bottom: 8px;
+}
+
+/* Stat sub: 小三 (~15pt) */
+.statSub {
+  display: block;
+  font-size: 1.3rem;
+  color: var(--color-text-secondary);
+  font-weight: 400;
+  line-height: 1.5;
 }

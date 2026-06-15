@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>个人简历</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    background: #f5f0e8;
+    font-family: 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', sans-serif;
+    background-image:
+      radial-gradient(ellipse at 30% 20%, rgba(210, 190, 160, 0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 70%, rgba(200, 175, 145, 0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(220, 200, 170, 0.08) 0%, transparent 70%);
+  }
+
+  .scene {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+
+  /* ── Faint decorative background shapes (for frosted glass to blur) ── */
+  .bg-deco {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .bg-deco-1 {
+    width: 35vw; height: 35vw; max-width: 500px; max-height: 500px;
+    top: -8%; left: -6%;
+    border: 1px solid rgba(180, 150, 120, 0.12);
+  }
+  .bg-deco-2 {
+    width: 28vw; height: 28vw; max-width: 400px; max-height: 400px;
+    bottom: 10%; right: -5%;
+    border: 1px solid rgba(180, 150, 120, 0.1);
+  }
+  .bg-deco-3 {
+    width: 200px; height: 200px;
+    top: 45%; left: 58%;
+    background: rgba(200, 175, 145, 0.06);
+  }
+
+  /* ── Lines ── */
+  .lines-row {
+    position: absolute;
+    top: 66vh;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(80px, 12vw, 160px);
+    z-index: 1;
+  }
+
+  .line-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .line {
+    width: 60px;
+    height: 1px;
+    background: rgba(170, 140, 110, 0.45);
+    border-radius: 0.5px;
+    flex-shrink: 0;
+  }
+
+  /* ── Characters ── */
+  .char {
+    margin-top: 14px;
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 0.06em;
+    color: #5c4a3a;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.45s ease-out, transform 0.45s ease-out;
+    user-select: none;
+  }
+  .char.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Frosted glass ball ── */
+  .ball {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow:
+      0 2px 10px rgba(160, 130, 100, 0.18),
+      0 0 0 1px rgba(255, 255, 255, 0.5) inset,
+      0 1px 2px rgba(0, 0, 0, 0.04);
+    z-index: 10;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    will-change: transform;
+  }
+  .ball.ready { opacity: 1; }
+
+  /* ── Contact shadow ── */
+  .ball-shadow {
+    position: absolute;
+    width: 14px;
+    height: 4px;
+    border-radius: 50%;
+    background: rgba(160, 130, 100, 0.18);
+    filter: blur(2px);
+    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
+    will-change: transform, opacity;
+  }
+
+  @media (max-width: 600px) {
+    .lines-row { gap: 10vw; top: 64vh; }
+    .line { width: 44px; }
+    .char { font-size: 0.9rem; margin-top: 10px; }
+    .ball { width: 18px; height: 18px; }
+    .ball-shadow { width: 10px; height: 3px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scene">
+  <div class="bg-deco bg-deco-1"></div>
+  <div class="bg-deco bg-deco-2"></div>
+  <div class="bg-deco bg-deco-3"></div>
+
+  <div class="lines-row" id="linesRow">
+    <div class="line-group">
+      <div class="line"></div>
+      <span class="char" id="char0">个</span>
+    </div>
+    <div class="line-group">
+      <div class="line"></div>
+      <span class="char" id="char1">人</span>
+    </div>
+    <div class="line-group">
+      <div class="line"></div>
+      <span class="char" id="char2">简</span>
+    </div>
+    <div class="line-group">
+      <div class="line"></div>
+      <span class="char" id="char3">历</span>
+    </div>
+  </div>
+
+  <div class="ball" id="ball"></div>
+  <div class="ball-shadow" id="ballShadow"></div>
+</div>
+
+<script>
+(async function() {
+  const ball   = document.getElementById('ball');
+  const shadow = document.getElementById('ballShadow');
+  const lines  = document.querySelectorAll('.line');
+  const chars  = document.querySelectorAll('.char');
+
+  const BALL_SIZE = ball.getBoundingClientRect().width || 22;
+
+  // ── Helpers ──
+  const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
+  function anim(el, keyframes, options) {
+    return el.animate(keyframes, { fill: 'forwards', ...options }).finished;
+  }
+
+  function lineTopCenter(lineEl) {
+    const r = lineEl.getBoundingClientRect();
+    return { x: r.left + r.width / 2, y: r.top };
+  }
+
+  function revealChar(i) {
+    chars[i].classList.add('visible');
+  }
+
+  function setShadow(cx, lineY, scaleX, opacity) {
+    shadow.style.transform = `translate(${cx - 7}px, ${lineY - 1}px) scaleX(${scaleX})`;
+    shadow.style.opacity = opacity;
+  }
+
+  // Pre-compute line positions
+  const LD = Array.from(lines).map(l => {
+    const { x, y } = lineTopCenter(l);
+    return { cx: x, cy: y }; // cy = top edge of line
+  });
+
+  // =========================================================
+  //  Main Sequence
+  // =========================================================
+
+  // Start position — top center
+  const sx = window.innerWidth / 2 - BALL_SIZE / 2;
+  const sy = window.innerHeight * 0.10;
+  ball.style.transform = `translate(${sx}px, ${sy}px)`;
+  ball.classList.add('ready');
+  await sleep(600);
+
+  // Initial drop: from start position diagonally to first line
+  const first = LD[0];
+  const firstTop = first.cy - BALL_SIZE;
+
+  await anim(ball, [
+    { transform: `translate(${sx}px, ${sy}px) scale(1,1)`, offset: 0 },
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${firstTop}px) scale(0.9,1.1)`, offset: 1 },
+  ], { duration: 450, easing: 'cubic-bezier(0.55,0.02,0.78,0.42)' });
+
+  // ── First squash on line 0 (after initial drop) ──
+  setShadow(first.cx, first.cy, 1, 0.6);
+  await anim(ball, [
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${firstTop}px) scale(0.9,1.1)`, offset: 0 },
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${first.cy - BALL_SIZE*0.55}px) scale(1.35,0.55)`, offset: 0.45 },
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${first.cy - BALL_SIZE*0.88}px) scale(1.06,0.92)`, offset: 1 },
+  ], { duration: 170, easing: 'ease-out' });
+  anim(shadow, [
+    { transform: `translate(${first.cx - 7}px, ${first.cy - 1}px) scaleX(1)`, offset: 0 },
+    { transform: `translate(${first.cx - 7}px, ${first.cy - 1}px) scaleX(1.9)`, offset: 0.45 },
+    { transform: `translate(${first.cx - 7}px, ${first.cy - 1}px) scaleX(1)`, offset: 1 },
+  ], { duration: 170, easing: 'ease-out' });
+  revealChar(0);
+
+  // First bounce up
+  const firstBounceCY  = (first.cy - BALL_SIZE / 2) - 58;
+  const firstBounceTop = firstBounceCY - BALL_SIZE / 2;
+  await anim(ball, [
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${first.cy - BALL_SIZE*0.88}px) scale(1.06,0.92)`, offset: 0 },
+    { transform: `translate(${first.cx - BALL_SIZE/2}px, ${firstBounceTop}px) scale(0.82,1.18)`, offset: 1 },
+  ], { duration: 260, easing: 'cubic-bezier(0.25,0.8,0.4,1)' });
+  shadow.style.opacity = '0';
+
+  let currCX = first.cx;
+  let currCY = firstBounceCY;
+
+  // Arc → bounce for lines 1, 2, 3
+  for (let i = 1; i <= 3; i++) {
+    // Arc to line i
+    const t  = LD[i];
+    const tTop  = t.cy - BALL_SIZE;
+    const tCY   = t.cy - BALL_SIZE / 2;
+    const midCX = (currCX + t.cx) / 2;
+    const apexCY = Math.min(currCY, tCY) - 50;
+
+    await anim(ball, [
+      { transform: `translate(${currCX - BALL_SIZE/2}px, ${currCY - BALL_SIZE/2}px) scale(0.82,1.18)`, offset: 0 },
+      { transform: `translate(${midCX - BALL_SIZE/2}px, ${apexCY - BALL_SIZE/2}px) scale(1.02,0.98)`, offset: 0.45 },
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${tTop}px) scale(0.9,1.1)`, offset: 1 },
+    ], { duration: 500, easing: 'cubic-bezier(0.38,0.82,0.52,0.98)' });
+
+    // Squash on line i
+    setShadow(t.cx, t.cy, 1, 0.6);
+    await anim(ball, [
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${tTop}px) scale(0.9,1.1)`, offset: 0 },
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${t.cy - BALL_SIZE*0.55}px) scale(1.35,0.55)`, offset: 0.45 },
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${t.cy - BALL_SIZE*0.88}px) scale(1.06,0.92)`, offset: 1 },
+    ], { duration: 170, easing: 'ease-out' });
+    anim(shadow, [
+      { transform: `translate(${t.cx - 7}px, ${t.cy - 1}px) scaleX(1)`, offset: 0 },
+      { transform: `translate(${t.cx - 7}px, ${t.cy - 1}px) scaleX(1.9)`, offset: 0.45 },
+      { transform: `translate(${t.cx - 7}px, ${t.cy - 1}px) scaleX(1)`, offset: 1 },
+    ], { duration: 170, easing: 'ease-out' });
+    revealChar(i);
+
+    // Bounce up from line i
+    const bCY  = tCY - 58;
+    const bTop = bCY - BALL_SIZE / 2;
+    await anim(ball, [
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${t.cy - BALL_SIZE*0.88}px) scale(1.06,0.92)`, offset: 0 },
+      { transform: `translate(${t.cx - BALL_SIZE/2}px, ${bTop}px) scale(0.82,1.18)`, offset: 1 },
+    ], { duration: 260, easing: 'cubic-bezier(0.25,0.8,0.4,1)' });
+    shadow.style.opacity = '0';
+
+    currCX = t.cx;
+    currCY = bCY;
+  }
+
+  // ── Final settle: ball rests on line 4 (index 3) ──
+  const last  = LD[3];
+  const lTop  = last.cy - BALL_SIZE;
+
+  // Descend gently
+  await anim(ball, [
+    { transform: `translate(${currCX - BALL_SIZE/2}px, ${currCY - BALL_SIZE/2}px) scale(0.82,1.18)`, offset: 0 },
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${lTop}px) scale(0.92,1.08)`, offset: 1 },
+  ], { duration: 300, easing: 'cubic-bezier(0.45,0.8,0.55,1)' });
+
+  // Gentle squash
+  await anim(ball, [
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${lTop}px) scale(0.92,1.08)`, offset: 0 },
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${last.cy - BALL_SIZE*0.7}px) scale(1.16,0.78)`, offset: 0.5 },
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${lTop}px) scale(1,1)`, offset: 1 },
+  ], { duration: 220, easing: 'ease-out' });
+
+  // Micro bounce
+  const microTop = lTop - 16;
+  await anim(ball, [
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${lTop}px) scale(1,1)`, offset: 0 },
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${microTop}px) scale(0.92,1.06)`, offset: 1 },
+  ], { duration: 180, easing: 'ease-out' });
+
+  // Settle to rest
+  await anim(ball, [
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${microTop}px) scale(0.92,1.06)`, offset: 0 },
+    { transform: `translate(${last.cx - BALL_SIZE/2}px, ${lTop}px) scale(1,1)`, offset: 1 },
+  ], { duration: 260, easing: 'cubic-bezier(0.45,0.8,0.5,1)' });
+
+  // Animation complete — ball rests on the fourth line ✨
+})();
+</script>
+</body>
+</html>

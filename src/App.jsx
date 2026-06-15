@@ -15,8 +15,6 @@ function App() {
       <main>
         <Hero />
         <About />
-        <Projects />
-        <Strengths />
         <Experience
           id="experience"
           label="CAMPUS"
@@ -30,6 +28,8 @@ function App() {
           title="实习经历"
           items={resume.internshipExperience}
         />
+        <Strengths />
+        <Projects />
       </main>
       <Footer />
     </div>
