@@ -16,8 +16,8 @@ export function revealSectionHeader(sectionSelector) {
     scrollTrigger: {
       trigger: sectionSelector,
       start: 'top 78%',
-      /* restart on every enter (down + up) so animation always replays */
-      toggleActions: 'restart none restart reset',
+      /* play once on enter, stay visible — avoids mobile scroll jank */
+      toggleActions: 'play none play none',
     },
     defaults: { ease: 'power3.out' },
   });
@@ -68,7 +68,7 @@ export function staggerCards(containerSelector, cardSelector, options = {}) {
       scrollTrigger: {
         trigger: containerSelector,
         start,
-        toggleActions: 'restart none restart reset',
+        toggleActions: 'play none play none',
       },
     },
   );
@@ -99,7 +99,7 @@ export function revealImages(containerSelector, imageSelector, options = {}) {
       scrollTrigger: {
         trigger: containerSelector,
         start,
-        toggleActions: 'restart none restart reset',
+        toggleActions: 'play none play none',
       },
     },
   );
@@ -139,7 +139,7 @@ export function revealTimeline(containerSelector, itemSelector) {
       scrollTrigger: {
         trigger: item,
         start: 'top 78%',
-        toggleActions: 'restart none restart reset',
+        toggleActions: 'play none play none',
       },
     });
 

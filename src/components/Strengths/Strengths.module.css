@@ -22,10 +22,16 @@
   transition: all var(--transition-base);
 }
 
-.card:hover {
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+}
+.card:active {
   border-color: var(--color-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  transform: translateY(-2px);
 }
 
 .icon {
@@ -50,4 +56,45 @@
   font-weight: 500;
   color: var(--color-text-secondary);
   line-height: 1.6;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .card {
+    padding: 28px 24px;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .card {
+    padding: 24px 20px;
+  }
+
+  .icon {
+    font-size: 1.6rem;
+    margin-bottom: 12px;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .cardDesc {
+    font-size: 0.95rem;
+  }
 }

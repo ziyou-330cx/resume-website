@@ -44,9 +44,30 @@
 
 html {
   scroll-behavior: smooth;
+  /* Offset for fixed navbar so anchor jumps don't hide section titles */
+  scroll-padding-top: 80px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/* ── Touch device: only devices that CAN'T hover get :active fallbacks ── */
+/* On touch screens, disable sticky :hover and replace with :active */
+@media (hover: none) and (pointer: coarse) {
+  /* The :active pseudo is natively applied on touch — no extra CSS needed,
+     but we remove :hover transitions so there's no sticky state residue. */
+}
+
+/* Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 body {
@@ -59,6 +80,14 @@ body {
   color: var(--color-text);
   background-color: var(--color-bg);
   overflow-x: hidden;
+  max-width: 100vw;
+  /* Smooth momentum scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent double-tap zoom on interactive elements */
+a, button, [role="button"] {
+  touch-action: manipulation;
 }
 
 a {
@@ -73,6 +102,12 @@ ul {
 img {
   display: block;
   max-width: 100%;
+}
+
+/* Prevent text from busting out of containers on narrow screens */
+h1, h2, h3, h4, h5, h6, p, span, a, li, td, th {
+  overflow-wrap: break-word;
+  word-break: break-word;
 }
 
 button {
@@ -92,6 +127,8 @@ button {
 
 .section {
   padding: var(--section-padding-y) 0;
+  /* Offset for fixed navbar when JS scrollIntoView or anchor jump targets this section */
+  scroll-margin-top: 80px;
 }
 
 /* Section label: bolder + tighter tracking for stronger hierarchy */
@@ -141,6 +178,52 @@ button {
   border-radius: 3px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--color-text-tertiary);
+@media (hover: hover) {
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--color-text-tertiary);
+  }
+}
+
+/* ===== Responsive: Tablet & Mobile ===== */
+@media (max-width: 768px) {
+  :root {
+    --section-padding-y: 80px;
+    --section-padding-x: 24px;
+  }
+
+  html {
+    scroll-padding-top: 60px;
+  }
+
+  .section {
+    scroll-margin-top: 60px;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-desc {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --section-padding-y: 60px;
+    --section-padding-x: 16px;
+  }
+
+  html {
+    scroll-padding-top: 52px;
+  }
+
+  .section {
+    scroll-margin-top: 52px;
+  }
+
+  .section-title {
+    font-size: 1.7rem;
+  }
 }

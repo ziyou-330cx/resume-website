@@ -91,9 +91,11 @@
   transition: all var(--transition-base);
 }
 
-.card:hover {
-  border-color: var(--color-border);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+@media (hover: hover) {
+  .card:hover {
+    border-color: var(--color-border);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  }
 }
 
 /* ---- Card meta ---- */
@@ -182,7 +184,13 @@
   background: #fdfcfa;
 }
 
-.campus .card:hover {
+@media (hover: hover) {
+  .campus .card:hover {
+    border-color: #e0d8c8;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+  }
+}
+.campus .card:active {
   border-color: #e0d8c8;
   box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
 }
@@ -283,10 +291,12 @@
 }
 
 /* Subtle hover: number pops slightly */
-.highlightNum:hover,
-.highlightNumCool:hover {
-  filter: brightness(1.15);
-  transition: filter 0.2s ease;
+@media (hover: hover) {
+  .highlightNum:hover,
+  .highlightNumCool:hover {
+    filter: brightness(1.15);
+    transition: filter 0.2s ease;
+  }
 }
 
 /* ================================================================
@@ -345,14 +355,32 @@
   transition: width 0.35s ease;
 }
 
-.dataPoint:hover::after {
-  width: 100%;
+@media (hover: hover) {
+  .dataPoint:hover::after {
+    width: 100%;
+  }
 }
 
 /* ================================================================
-   Responsive: stack period above role on narrow screens
+   Responsive
    ================================================================ */
-@media (max-width: 640px) {
+@media (max-width: 768px) {
+  .item {
+    gap: 20px;
+  }
+
+  .card {
+    padding: 24px;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
+
+  .campus .card {
+    padding: 24px;
+  }
+
   .campus .cardMeta {
     justify-content: flex-start;
   }
@@ -361,11 +389,47 @@
     font-size: 1.05rem;
   }
 
-  .campusHighlights li {
+  .campusHighlights li,
+  .highlights li {
     font-size: 0.95rem;
   }
+}
 
-  .header {
-    margin-bottom: 40px;
+@media (max-width: 480px) {
+  .item {
+    gap: 16px;
+  }
+
+  .line {
+    width: 20px;
+  }
+
+  .card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .campus .card {
+    padding: 18px;
+    border-radius: 12px;
+  }
+
+  .role {
+    font-size: 1.05rem;
+  }
+
+  .org {
+    font-size: 0.95rem;
+    margin-bottom: 14px;
+  }
+
+  .highlights li,
+  .campusHighlights li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .period {
+    font-size: 0.85rem;
   }
 }

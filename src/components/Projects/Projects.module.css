@@ -22,8 +22,14 @@
   transition: all var(--transition-base);
 }
 
-.card:hover {
-  transform: translateY(-4px);
+@media (hover: hover) {
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
+    border-color: var(--color-border);
+  }
+}
+.card:active {
   box-shadow: 0 16px 48px rgba(0, 0, 0, 0.06);
   border-color: var(--color-border);
 }
@@ -43,6 +49,7 @@
   height: 100%;
   -ms-overflow-style: none;
   scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
 }
 
 .imagesScroll::-webkit-scrollbar {
@@ -82,14 +89,22 @@
   transition: opacity var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
 }
 
-.card:hover .cardArrow,
-.imagesArea:hover .cardArrow {
-  opacity: 1;
-}
+@media (hover: hover) {
+  .card:hover .cardArrow,
+  .imagesArea:hover .cardArrow {
+    opacity: 1;
+  }
 
-.cardArrow:hover {
-  background: rgba(196, 154, 108, 0.2);
-  border-color: rgba(255, 255, 255, 0.9);
+  .cardArrow:hover {
+    background: rgba(196, 154, 108, 0.2);
+    border-color: rgba(255, 255, 255, 0.9);
+  }
+}
+/* On touch devices: always show arrows at partial opacity */
+@media (hover: none) and (pointer: coarse) {
+  .cardArrow {
+    opacity: 0.55;
+  }
 }
 
 .cardArrowLeft {
@@ -159,4 +174,42 @@
   font-weight: 500;
   color: var(--color-text-secondary);
   line-height: 1.6;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .imagesArea {
+    height: 300px;
+  }
+
+  .cardBody {
+    padding: 24px;
+  }
+
+  .header {
+    margin-bottom: 40px;
+  }
+}
+
+@media (max-width: 480px) {
+  .imagesArea {
+    height: 240px;
+  }
+
+  .cardBody {
+    padding: 20px;
+  }
+
+  .cardTitle {
+    font-size: 1.15rem;
+  }
+
+  .cardDesc {
+    font-size: 0.9rem;
+  }
 }

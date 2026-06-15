@@ -1,7 +1,34 @@
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback, useRef, useState } from 'react';
 import styles from './Lightbox.module.css';
 
 export default function Lightbox({ images, currentIndex, onClose, onPrev, onNext, onNavigate }) {
+  const imageRef = useRef(null);
+  const [touchStart, setTouchStart] = useState(null);
+  const [touchEnd, setTouchEnd] = useState(null);
+  const minSwipeDistance = 50;
+
+  const onTouchStart = (e) => {
+    setTouchEnd(null);
+    setTouchStart({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchMove = (e) => {
+    setTouchEnd({ x: e.targetTouches[0].clientX, y: e.targetTouches[0].clientY });
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const dx = touchStart.x - touchEnd.x;
+    const dy = touchStart.y - touchEnd.y;
+    /* Only trigger swipe if horizontal movement dominates */
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > minSwipeDistance) {
+      if (dx > 0) onNext();
+      else onPrev();
+    }
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
+
   const handleKeyDown = useCallback(
     (e) => {
       switch (e.key) {
@@ -21,10 +48,18 @@ export default function Lightbox({ images, currentIndex, onClose, onPrev, onNext
 
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown);
+    /* Lock body scroll without layout shift — compensate scrollbar width */
+    const scrollbarW = window.innerWidth - document.documentElement.clientWidth;
+    const origOverflow = document.body.style.overflow;
+    const origPaddingR = document.body.style.paddingRight;
     document.body.style.overflow = 'hidden';
+    if (scrollbarW > 0) {
+      document.body.style.paddingRight = `${scrollbarW}px`;
+    }
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.body.style.overflow = '';
+      document.body.style.overflow = origOverflow;
+      document.body.style.paddingRight = origPaddingR;
     };
   }, [handleKeyDown]);
 
@@ -44,12 +79,20 @@ export default function Lightbox({ images, currentIndex, onClose, onPrev, onNext
         {currentIndex + 1} / {images.length}
       </div>
 
-      {/* Image */}
-      <div className={styles.imageWrap} onClick={(e) => e.stopPropagation()}>
+      {/* Image — supports swipe + pinch-zoom on mobile */}
+      <div
+        className={styles.imageWrap}
+        onClick={(e) => e.stopPropagation()}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         <img
+          ref={imageRef}
           src={images[currentIndex]}
           alt={`预览 ${currentIndex + 1}`}
           className={styles.image}
+          draggable={false}
         />
       </div>
 

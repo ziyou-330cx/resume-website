@@ -86,7 +86,12 @@
   transition: color var(--transition-fast);
 }
 
-a.contactItem:hover {
+@media (hover: hover) {
+  a.contactItem:hover {
+    color: var(--color-accent);
+  }
+}
+a.contactItem:active {
   color: var(--color-accent);
 }
 
@@ -110,10 +115,16 @@ a.contactItem:hover {
   transition: all var(--transition-base);
 }
 
-.statCard:hover {
+@media (hover: hover) {
+  .statCard:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+}
+.statCard:active {
   border-color: var(--color-accent);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-  transform: translateY(-2px);
 }
 
 /* Stat value: prominent number */
@@ -145,4 +156,106 @@ a.contactItem:hover {
   color: var(--color-text-secondary);
   font-weight: 400;
   line-height: 1.5;
+}
+
+/* ===== Responsive: Tablet ===== */
+@media (max-width: 768px) {
+  .about {
+    padding-top: 80px;
+  }
+
+  .top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 32px;
+    margin-bottom: 56px;
+  }
+
+  .avatar {
+    width: 200px;
+    height: 200px;
+  }
+
+  .bio {
+    font-size: 1rem;
+  }
+
+  .bioSecondary {
+    font-size: 0.95rem;
+    max-width: 100%;
+    margin-bottom: 24px;
+  }
+
+  .contactRow {
+    justify-content: center;
+    gap: 20px;
+  }
+
+  .contactItem {
+    font-size: 1.2rem;
+  }
+
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .statCard {
+    padding: 28px 16px;
+  }
+
+  .statValue {
+    font-size: 2.8rem;
+  }
+
+  .statLabel {
+    font-size: 1.3rem;
+  }
+
+  .statSub {
+    font-size: 1rem;
+  }
+}
+
+/* ===== Responsive: Mobile ===== */
+@media (max-width: 480px) {
+  .avatar {
+    width: 160px;
+    height: 160px;
+  }
+
+  .top {
+    gap: 24px;
+    margin-bottom: 40px;
+  }
+
+  .contactRow {
+    gap: 16px;
+  }
+
+  .contactItem {
+    font-size: 1rem;
+  }
+
+  .stats {
+    gap: 12px;
+  }
+
+  .statCard {
+    padding: 20px 12px;
+    border-radius: 12px;
+  }
+
+  .statValue {
+    font-size: 2.2rem;
+  }
+
+  .statLabel {
+    font-size: 1.1rem;
+  }
+
+  .statSub {
+    font-size: 0.95rem;
+  }
 }

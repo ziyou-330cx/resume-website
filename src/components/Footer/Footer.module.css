@@ -42,7 +42,12 @@
   transition: color var(--transition-fast);
 }
 
-a.contactLink:hover {
+@media (hover: hover) {
+  a.contactLink:hover {
+    color: rgba(255, 255, 255, 0.9);
+  }
+}
+a.contactLink:active {
   color: rgba(255, 255, 255, 0.9);
 }
 
@@ -60,4 +65,37 @@ a.contactLink:hover {
   font-weight: 500;
   opacity: 0.45;
   letter-spacing: 0.04em;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .footer {
+    padding: 48px 0 32px;
+  }
+
+  .name {
+    font-size: 1.3rem;
+  }
+
+  .title {
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .contact {
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .contactLink {
+    font-size: 0.88rem;
+  }
+
+  .divider {
+    margin-bottom: 24px;
+  }
+
+  .copyright {
+    font-size: 0.75rem;
+  }
 }
